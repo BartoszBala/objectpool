@@ -1,3 +1,5 @@
+import jdk.vm.ci.meta.JavaValue;
+
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -8,8 +10,8 @@ public class ObjectPool {
 
     private static ObjectPool instance;
 
-    private static Set<Connection> inUse = new HashSet<Connection>();
-    private static Set<Connection> available = new HashSet<Connection>();
+    private static Set<Connection> inUse;
+    private static Set<Connection> available;
 
     private static final short POOL_LIMIT = 3;
 
@@ -26,7 +28,8 @@ public class ObjectPool {
                 if (instance == null)
 
                     instance = new ObjectPool();
-
+                inUse = new HashSet<>();
+                available=new HashSet<>();
 
             }
 
@@ -52,7 +55,7 @@ public class ObjectPool {
         return null;
     }
 
-    public synchronized  Connection checkIn(Connection connection) {
+    public synchronized Connection checkIn(Connection connection) {
         inUse.remove(connection);
         available.add(connection);
         return null;
