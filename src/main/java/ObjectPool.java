@@ -4,12 +4,38 @@ import java.util.Set;
 
 public class ObjectPool {
 
+    //step 1
+
+    private static ObjectPool instance;
+
     private static Set<Connection> inUse = new HashSet<Connection>();
     private static Set<Connection> available = new HashSet<Connection>();
 
     private static final short POOL_LIMIT = 3;
 
-    public synchronized static Connection checkOut(){
+    //step 2
+    private ObjectPool() {
+    }
+
+    //step3
+
+    public static ObjectPool getInstance() {
+
+        if (instance == null) {
+            synchronized (Object.class) {
+                if (instance == null)
+
+                    instance = new ObjectPool();
+
+
+            }
+
+
+        }
+        return instance;
+    }
+
+    public synchronized Connection checkOut() {
         if (inUse.size() < POOL_LIMIT) {
             if (available.isEmpty()) {
                 available.add(new Connection());
@@ -26,7 +52,7 @@ public class ObjectPool {
         return null;
     }
 
-    public synchronized static Connection checkIn(Connection connection){
+    public synchronized  Connection checkIn(Connection connection) {
         inUse.remove(connection);
         available.add(connection);
         return null;
